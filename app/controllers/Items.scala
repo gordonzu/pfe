@@ -14,13 +14,11 @@ object Items extends Controller {
     "price" -> item.price
   ))
 
-	val list = Action {
-    Ok(Json.arr(theMap))
-  }
+	val list = Action(Ok(Json.arr(theMap)))
 
 	val create = Action { NotImplemented }
 	
-	//def details(id: Long) = Action { NotImplemented }  
+	//def details(id: Long) = Action { NotImplemented }
 
 /*
 
@@ -30,7 +28,7 @@ object Items extends Controller {
       "name" -> item.name,
       "price" -> item.price
     )): _*))
-  }
+ }
 */
 
   def details(id: Long) = Action {

@@ -17,6 +17,15 @@ object Shop extends Shop {
   private val items = TrieMap.empty[Long, Item]
   private val seq = new AtomicLong
 
+  /*var data = List[Item](
+    Item(1007686, "The First Item", 99.99),
+    Item(1007687, "TheSecond Item", 199.99),
+    Item(1007688, "The Third Item", 299.99),
+    Item(1007689, "The Fourth Item", 399.99)
+  )
+  //def list(): Seq[Item] = { data }
+*/
+
   def list(): Seq[Item] = items.values.to[Seq]
 
   def create(name: String, price: Double): Option[Item] = {
@@ -34,7 +43,9 @@ object Shop extends Shop {
     Some(item)
   }
 
- def delete(id: Long): Boolean = items.remove(id).isDefined
+  def delete(id: Long): Boolean = items.remove(id).isDefined
+  def getCount(): Boolean = items.isEmpty
+
 }
 
 

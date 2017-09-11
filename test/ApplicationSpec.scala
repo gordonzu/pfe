@@ -1,14 +1,20 @@
-import org.scalatestplus.play._
 import play.api.test._
-import play.api.test.Helpers._
 
-/**
- * Add your spec here.
- * You can mock out a whole application including requests, plugins etc.
- * For more information, consult the wiki.
- */
-class ApplicationSpec extends PlaySpec with OneAppPerTest {
 
+class ApplicationSpec extends PlaySpecification {
+
+  "AddTest" should {
+
+    "add an Item to the in-memory data structure" in {
+      val shop = models.Shop
+      shop.create("The Fifth Item", 599.99)
+      shop.getCount() must beFalse
+      //shop.getCount().println()
+    }
+  }
+
+
+/*
   "Routes" should {
 
     "send 404 on a bad request" in  {
@@ -28,7 +34,9 @@ class ApplicationSpec extends PlaySpec with OneAppPerTest {
     }
 
   }
+*/
 
+/*
   "CountController" should {
 
     "return an increasing count" in {
@@ -38,5 +46,6 @@ class ApplicationSpec extends PlaySpec with OneAppPerTest {
     }
 
   }
+*/
 
 }
