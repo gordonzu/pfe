@@ -9,7 +9,6 @@ class ApplicationSpec extends PlaySpecification {
       val shop = models.Shop
       shop.create("The Fifth Item", 599.99)
       shop.getCount() must beFalse
-      //shop.getCount().println()
     }
   }
 
