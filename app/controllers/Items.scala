@@ -3,7 +3,7 @@ package controllers
 import play.api.mvc.{Action, Controller}
 import play.api.libs.json.Json
 import play.api.libs.json.Writes
-import play.api.libs.json.{__, Reads}
+import play.api.libs.json.{__, Reads, JsSuccess, JsError}
 import play.api.libs.functional.syntax._
 import models.Item
 
@@ -13,9 +13,9 @@ object Items extends Controller {
 
   val shop = models.Shop
 
-  implicit val readsCreateItem: Reads[CreateItem] = (
-    ((__ \ "name").read[String]) and
-    ((__ \ "price").read[Double])
+  implicit val readsCreateItem = (
+    (__ \ "name").read(Reads.minLength[String](1)) and
+    (__ \ "price").read(Reads.min[Double](0))
   )(CreateItem.apply _)
 
   implicit val writesItem = Writes[Item] {
@@ -38,7 +38,17 @@ object Items extends Controller {
     }
   }
 
-	val create = Action { NotImplemented }
+	val create = Action(parse.json) { implicit request =>
+    request.body.validate[CreateItem] match {
+      case JsSuccess(createItem, _) => 
+        shop.create(createItem.name, createItem.price) match {
+          case Some(item) => Ok(Json.toJson(item))
+          case None => InternalServerError
+        }
+        case JsError(errors) =>
+          BadRequest
+    } 
+  }
   
   def update(id: Long) = Action { NotImplemented }
 
