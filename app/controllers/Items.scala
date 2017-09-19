@@ -8,6 +8,7 @@ import play.api.libs.functional.syntax._
 import models.Item
 
 case class CreateItem(name: String, price: Double)
+case class UpdateItem(id: Long, name: String, price: Double)
 
 object Items extends Controller {
 
@@ -17,6 +18,12 @@ object Items extends Controller {
     (__ \ "name").read(Reads.minLength[String](1)) and
     (__ \ "price").read(Reads.min[Double](0))
   )(CreateItem.apply _)
+
+  implicit val readsUpdateItem = (
+    (__ \ "id").read[Long] and
+    (__ \ "name").read(Reads.minLength[String](1)) and
+    (__ \ "price").read(Reads.min[Double](0))
+  )(UpdateItem.apply _)
 
   implicit val writesItem = Writes[Item] {
     case Item(id, name, price) => 
@@ -50,9 +57,22 @@ object Items extends Controller {
     } 
   }
   
-  def update(id: Long) = Action { NotImplemented }
+  def update(id: Long) = Action(parse.json) { implicit request =>
+    request.body.validate[UpdateItem] match {
+      case JsSuccess(updateItem, _) =>
+        shop.update(updateItem.id, updateItem.name, updateItem.price) match {
+          case Some(item) => Ok(Json.toJson(item))
+          case None => InternalServerError
+        }
+        case JsError(errors) =>
+          BadRequest
+    }      
+  }
 
-  def delete(id: Long) = Action { NotImplemented }
+  def delete(id: Long) = Action { 
+    if (shop.delete(id)) Ok else BadRequest      
+  }
+
 }
 
 
